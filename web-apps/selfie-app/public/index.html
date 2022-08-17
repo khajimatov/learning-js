@@ -2,6 +2,12 @@
 <html lang="en">
 
 <head>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css"
+        integrity="sha512-hoalWLoI8r4UszCkZ5kL8vayOGVae1oxXe/2A4AO6J9+580uKHDO3JdHb7NzwwzK5xr/Fs0W40kiNHxM9vyTtQ=="
+        crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js"
+        integrity="sha512-BB3hKbKWOc9Ez/TAwyWxNXeoV9c1v6FIeYiBieIWkpLjauysF18NzgR1MBNBXf8/KABdlkX68nAhlwcDFLGPCQ=="
+        crossorigin=""></script>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,11 +18,28 @@
     <h1>Your position</h1>
     <p>Latitude: <span id="lat"></span>&deg;</p>
     <p>Longitude: <span id="lon"></span>&deg;</p>
+    <div style="height: 400px; margin-top: 20px;" id="map"></div>
     <script>
-        navigator.geolocation.getCurrentPosition(function (pos) {
+
+        const map = L.map('map').setView([0, 0], 1)
+        const marker = L.marker([0, 0]).addTo(map);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap'
+        }).addTo(map);
+
+        navigator.geolocation.getCurrentPosition(function getISS(pos) {
+            marker.setLatLng([pos.coords.latitude, pos.coords.longitude])
+            map.setView([pos.coords.latitude, pos.coords.longitude], 10)
+
             document.getElementById('lat').textContent = pos.coords.latitude;
             document.getElementById('lon').textContent = pos.coords.longitude;
         });
+
+        getISS();
+
+        setInterval(getISS, 1000)
+
     </script>
 </body>
 
