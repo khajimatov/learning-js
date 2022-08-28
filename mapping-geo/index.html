@@ -13,22 +13,19 @@
     <script src="main.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mapping GEO</title>
-
-
-
 </head>
 
 <body>
     <h1>GEO Position of ISS</h1>
     <p id="lat">0</p>
     <p id="lng">0</p>
-    <button style="margin-bottom: 20px;">Track ISS</button>
+    <button style="margin-bottom: 20px;" id="track" onclick="getPos()">Track ISS</button>
     <div style="height: 400px;" id="map"></div>
-
 
     <script>
         const map = L.map('map').setView([0, 0], 1);
         const marker = L.marker([0, 0]).addTo(map);
+        let firstLoad = true;
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '© OpenStreetMap'
@@ -42,14 +39,25 @@
             const data = await response.json();
             const { latitude, longitude } = data;
 
-            map.setView([latitude, longitude], 3.5);
+            marker.setLatLng([latitude, longitude]);
 
-            marker.setLatLng([latitude, longitude])
+            if (firstLoad) {
+                map.setView([latitude, longitude], 3.5);
+                firstLoad = false;
+            }
 
             document.getElementById('lat').textContent = latitude;
             document.getElementById('lng').textContent = longitude;
         }
         getISS();
+
+        async function getPos() {
+            const response = await fetch(api);
+            const data = await response.json();
+            const { latitude, longitude } = data;
+
+            map.setView([latitude, longitude], 3.5);
+        }
 
         setInterval(getISS, 1000)
     </script>
