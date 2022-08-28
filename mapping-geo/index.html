@@ -19,14 +19,15 @@
 </head>
 
 <body>
-    <h1>GEO Position</h1>
-    <p id="lat"></p>
-    <p id="lng"></p>
+    <h1>GEO Position of ISS</h1>
+    <p id="lat">0</p>
+    <p id="lng">0</p>
+    <button style="margin-bottom: 20px;">Track ISS</button>
     <div style="height: 400px;" id="map"></div>
 
-    <script>
-        const map = L.map('map').setView([0, 0], 1)
 
+    <script>
+        const map = L.map('map').setView([0, 0], 1);
         const marker = L.marker([0, 0]).addTo(map);
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -41,8 +42,10 @@
             const data = await response.json();
             const { latitude, longitude } = data;
 
+            map.setView([latitude, longitude], 3.5);
+
             marker.setLatLng([latitude, longitude])
-            map.setView([latitude, longitude], 3.5)
+
             document.getElementById('lat').textContent = latitude;
             document.getElementById('lng').textContent = longitude;
         }
